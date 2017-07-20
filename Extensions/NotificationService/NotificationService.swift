@@ -85,6 +85,8 @@ class SyncDataDisplay {
         }
 
         switch message {
+        case .accountVerified:
+            break
         case .deviceConnected(let deviceName):
             presentNotification(title: Strings.FxAPush_DeviceConnected_title,
                                 body: Strings.FxAPush_DeviceConnected_body,
@@ -97,6 +99,10 @@ class SyncDataDisplay {
             } else {
                 presentNotification(title: Strings.FxAPush_DeviceDisconnected_title,
                                     body: Strings.FxAPush_DeviceDisconnected_body)
+            }
+        case .collectionChanged(let collections):
+            if collections.contains("clients") {
+                displaySentTabNotification()
             }
         default:
             break
