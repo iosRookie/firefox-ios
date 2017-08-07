@@ -208,7 +208,7 @@ enum PushMessageType: String {
     case accountVerified = "account_verified"
 }
 
-enum PushMessage {
+enum PushMessage: Equatable {
     case deviceConnected(String)
     case deviceDisconnected(String?)
     case profileUpdated
@@ -216,6 +216,40 @@ enum PushMessage {
     case passwordReset
     case collectionChanged(collections: [String])
     case accountVerified
+
+    var messageType: PushMessageType {
+        switch self {
+        case .deviceConnected(_):
+            return .deviceConnected
+        case .deviceDisconnected(_):
+            return .deviceDisconnected
+        case .profileUpdated:
+            return .profileUpdated
+        case .passwordChanged:
+            return .passwordChanged
+        case .passwordReset:
+            return .passwordReset
+        case .collectionChanged(collections: _):
+            return .collectionChanged
+        case .accountVerified:
+            return .accountVerified
+        }
+    }
+
+    public static func ==(lhs: PushMessage, rhs: PushMessage) -> Bool {
+        guard lhs.messageType == rhs.messageType else {
+            return false
+        }
+
+        switch (lhs, rhs) {
+        case (.deviceConnected(let lName), .deviceConnected(let rName)):
+            return lName == rName
+        case (.collectionChanged(let lList), .collectionChanged(let rList)):
+            return lList == rList
+        default:
+            return true
+        }
+    }
 }
 
 typealias PushMessageResult = Deferred<Maybe<PushMessage>>
